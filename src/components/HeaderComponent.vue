@@ -30,14 +30,24 @@
     </nav>
     <div class="container-fluid">
         <div class="row">
+          <!-- Film and series -->
             <div class="col-3 card d-flex" v-for="(movie, index) in movies" :key="index">
                 <img :src="'https://image.tmdb.org/t/p/w342' + movie.poster_path" alt="">
                 <div>{{movie.title}}</div>
+                <div>{{movie.name}}</div>
+                <div>{{movie.original_name}}</div>
                 <div>{{movie.original_title}}</div>
-                <div>{{movie.original_language}}</div> <lang-flag :iso="movie.original_language" :squared="true"/>
+                <div>{{movie.original_language}}</div> <lang-flag :iso="movie.original_language"/>
                 <div>{{movie.vote_average}}</div>
-                
+                <div class="star">
+                   <font-awesome-icon :class="movie.vote_average >= 2 ? 'color_star' : '' " icon="fa-solid fa-star" />
+                   <font-awesome-icon :class="movie.vote_average >= 4 ? 'color_star': '' " icon="fa-solid fa-star" />
+                   <font-awesome-icon :class="movie.vote_average >= 6 ? 'color_star' : '' " icon="fa-solid fa-star" />
+                   <font-awesome-icon :class="movie.vote_average >= 8 ? 'color_star' : '' " icon="fa-solid fa-star" />
+                   <font-awesome-icon :class="movie.vote_average >= 10 ? 'color_star' : '' " icon="fa-solid fa-star" />
+                </div>
             </div>
+         
         </div>
     </div>
   </div>
@@ -63,17 +73,26 @@ export default {
       .then((results) =>{
           this.movies = results.data.results;
       })
+      axios.get(`https://api.themoviedb.org/3/search/tv?api_key=6492e216147f755d586c53abf227d9a5&language=it-IT&page=1&include_adult=false&query=${this.query}`)
+      .then((results) =>{
+        this.movies = [...this.movies, ...results.data.results];
+      })
+
       .catch((error) => {
           console.log(error);
           this.error = `Scusa c'è un errore ${this.error}`
       })
     }
   },
+  
 };
 </script>
 
 <style lang="scss" scoped>
 .bg_header{
     background-color: #222 !important;
+}
+.color_star{
+  color: goldenrod;
 }
 </style>
