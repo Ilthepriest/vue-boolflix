@@ -1,8 +1,10 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light bg_header">
-      <div class="container-fluid d-flex justify-content-around align-items-center">
-          <img class="logo" src="@/assets/img/logoNetflix.png" alt="">
+      <div
+        class="container-fluid d-flex justify-content-around align-items-center"
+      >
+        <img class="logo" src="@/assets/img/logoNetflix.png" alt="" />
         <button
           class="navbar-toggler color_red"
           type="button"
@@ -12,9 +14,12 @@
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-        <span class="navbar-toggler-icon"></span>
+          <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-end mt-3" id="navbarSupportedContent">     
+        <div
+          class="collapse navbar-collapse justify-content-end mt-3"
+          id="navbarSupportedContent"
+        >
           <form class="d-flex" @submit.prevent>
             <input
               class="form-control me-2"
@@ -23,42 +28,92 @@
               aria-label="Search"
               v-model="inputSearch"
             />
-            <button class="btn btn-outline-light"  @click="search" type="submit">Search</button>
+            <button class="btn btn-outline-light" @click="search" type="submit">
+              Search
+            </button>
           </form>
         </div>
       </div>
     </nav>
     <div class="container-fluid">
-        <div class="row row-cols-1 row-cols-lg-6 d-flex justify-content-center p-3">
-          <!-- Film and series -->
-            <div class="col card d-flex text-center border_radius mx-3 p-3 gy-5 hover_card" v-for="movie in movies" :key="movie.id">
-                <img class="cover h-100" v-if="!movie.poster_path" src="https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png" alt="">
-                <img :src="'https://image.tmdb.org/t/p/w342' + movie.poster_path" alt="">
-                <div class="over_view" v-on:mouseover="mouseover(movie.id)">
-                  <div>{{movie.title}}</div>
-                  <div>{{movie.name}}</div>
-                  <div>{{movie.original_name}}</div>
-                  <div>{{movie.original_title}}</div>
-                  <div>{{movie.original_language}}</div> <lang-flag :iso="movie.original_language"/>
-                  <div>{{movie.vote_average}}</div>
-                  <div>{{movie.overview}}</div>
-                  <div>{{movie.id}}</div>
-                  <div class="star">
-                    <font-awesome-icon :class="arrotondo(movie.vote_average) >= 2 ? 'color_star' : '' " icon="fa-solid fa-star" />
-                    <font-awesome-icon :class="arrotondo(movie.vote_average) >= 4 ? 'color_star': '' " icon="fa-solid fa-star" />
-                    <font-awesome-icon :class="arrotondo(movie.vote_average) >= 6 ? 'color_star' : '' " icon="fa-solid fa-star" />
-                    <font-awesome-icon :class="arrotondo(movie.vote_average) >= 8 ? 'color_star' : '' " icon="fa-solid fa-star" />
-                    <font-awesome-icon :class="arrotondo(movie.vote_average) >= 10 ? 'color_star' : '' " icon="fa-solid fa-star" />
+      <div
+        class="row row-cols-1 row-cols-lg-6 d-flex justify-content-center p-3"
+      >
+        <!-- Film and series -->
+        <div
+          class="
+            col
+            card
+            d-flex
+            text-center
+            border_radius
+            mx-3
+            p-3
+            gy-5
+            hover_card
+          "
+          v-for="movie in movies"
+          :key="movie.id"
+        >
+          <img
+            class="cover h-100"
+            v-if="!movie.poster_path"
+            src="https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png"
+            alt=""
+          />
+          <img
+            :src="'https://image.tmdb.org/t/p/w342' + movie.poster_path"
+            alt=""
+          />
+          <div class="over_view text_justify p-4">
+            <div>{{ movie.title }}</div>
+            <div>{{ movie.name }}</div>
+            <div>{{ movie.original_name }}</div>
+            <div>{{ movie.original_title }}</div>
+            <div>{{ movie.original_language }}</div>
+            <lang-flag :iso="movie.original_language" />
+            <div>{{ movie.vote_average }}</div>
+            <div>{{ movie.overview }}</div>
+            <div class="star">
+              <font-awesome-icon
+                class="color_star"
+                icon="fa-solid fa-star"
+                v-for="star in arrotondo(movie.vote_average)"
+                :key="star.id"
+              />
+              <font-awesome-icon
+                v-for="star in 5 - arrotondo(movie.vote_average)"
+                :key="star.id"
+                icon="fa-solid fa-star"
+              />
+              <!-- Sezione attori ------------------------------------------------------->
+              <h5 class="text_red">CAST</h5>
+              <div>
+                <div v-if="movie.actors.length > 0">
+                  <div v-for="actor in movie.actors" :key="actor.id">
+                    {{ actor.name }}
+                  </div>
                 </div>
-                <div v-for="(actor, index) in actors" :key="index"></div>
-                  <div>{{actors[0].name}}</div>
-                  <div>{{actors[1].name}}</div>
-                  <div>{{actors[2].name}}</div>
-                  <div>{{actors[3].name}}</div>
-                  <div>{{actors[4].name}}</div>
-              </div> 
+                <div v-else>
+                  <p>Attori non trovati...</p>
+                </div>
+              </div>
+              <!-- Fine attori -->
+
+              <!-- Selezione Generi -->
+              <h5 class="text_red">GENERE</h5>
+              <div>
+                <div v-for="genere in genres" :key="genere.id">
+                  <div v-if="movie.genre_ids.includes(genere.id)">
+                    {{ genere.name }}
+                  </div>
+                </div>
+              </div>
+              <!-- Fine Generi -->
             </div>
+          </div>
         </div>
+      </div>
     </div>
   </div>
 </template>
@@ -67,81 +122,115 @@
 import axios from "axios";
 export default {
   name: "SiteHeader",
-  data(){
-      return {
-          movies: [],
-          error: null,
-          query: "",
-          inputSearch: "",
-          actors:[],
-         
-          
-      }
+  data() {
+    return {
+      movies: [],
+      error: null,
+      query: "",
+      inputSearch: "",
+      genres: [],
+    };
   },
-   methods:{
-    search() {
-      console.log('Searching ...');
-       this.query = this.inputSearch
-       axios.get(`https://api.themoviedb.org/3/search/movie?api_key=6492e216147f755d586c53abf227d9a5&language=it-IT&page=1&include_adult=false&query=${this.query}`)
-      .then((results) =>{
+  methods: {
+    async search() {
+      console.log("Searching ...");
+      this.query = this.inputSearch;
+      await axios
+        .get(
+          `https://api.themoviedb.org/3/search/movie?api_key=6492e216147f755d586c53abf227d9a5&language=it-IT&page=1&include_adult=false&query=${this.query}`
+        )
+        .then((results) => {
           this.movies = results.data.results;
-      })
-      axios.get(`https://api.themoviedb.org/3/search/tv?api_key=6492e216147f755d586c53abf227d9a5&language=it-IT&page=1&include_adult=false&query=${this.query}`)
-      .then((results) =>{
-        this.movies = [...this.movies, ...results.data.results];
-      })
-     
-      .catch((error) => {
+        })
+        .catch((error) => {
           console.log(error);
-          this.error = `Scusa c'è un errore ${this.error}`
-      })
+          this.error = `Scusa c'è un errore ${this.error}`;
+        });
+
+      await axios
+        .get(
+          `https://api.themoviedb.org/3/search/tv?api_key=6492e216147f755d586c53abf227d9a5&language=it-IT&page=1&include_adult=false&query=${this.query}`
+        )
+        .then((results) => {
+          this.movies = [...this.movies, ...results.data.results];
+        })
+        .catch((error) => {
+          console.log(error);
+          this.error = `Scusa c'è un errore ${this.error}`;
+        });
+      this.movies.forEach((element) => {
+        // console.log({ element });
+        axios
+          .get(
+            `https://api.themoviedb.org/3/movie/${element.id}/credits?api_key=6492e216147f755d586c53abf227d9a5&language=en-US`
+          )
+          .then((results) => {
+            // console.log(results);
+            let castFive = results.data.cast.slice(0, 5);
+            this.$set(element, "actors", castFive);
+          })
+          .catch((error) => {
+            console.log(error);
+
+            this.$set(element, "actors", []);
+          });
+      });
+
+      await axios
+        .get(
+          "https://api.themoviedb.org/3/genre/movie/list?api_key=6492e216147f755d586c53abf227d9a5&language=en-US"
+        )
+        .then((results) => {
+          this.genres = results.data.genres;
+        })
+        .catch((error) => {
+          console.log(error);
+          this.error = `Scusa c'è un errore ${this.error}`;
+        });
+      // console.log(this.movies);
     },
-    arrotondo(num){
-      return Math.round(num)
+
+    arrotondo(num) {
+      // console.log( Math.round(num / 2));
+      return Math.round(num / 2);
     },
-    mouseover(id){
-        axios.get(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=6492e216147f755d586c53abf227d9a5&language=en-US`)
-        .then((results) =>{
-          this.actors = results.data.cast;
-      })
-    }    
-  }
-  
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-.bg_header{
-    background-color: #141414 !important;
+.bg_header {
+  background-color: #141414 !important;
 }
-.color_red{
+.color_red {
   border: 4px solid #e10228;
   border-color: red !important;
   background-color: white;
 }
-.logo{
+.logo {
   width: 100px;
 }
-.color_star{
+.color_star {
   color: goldenrod;
 }
-.border_radius{
+.border_radius {
   border-radius: 10px;
 }
-.cover{
+.cover {
   object-fit: cover;
 }
-.over_view{
+.over_view {
   display: none;
   overflow: auto;
-}.hover_card{
+}
+.hover_card {
   background-color: #141414;
 }
-.hover_card:hover{
+.hover_card:hover {
   position: relative;
   background-color: #141414;
 }
-.hover_card:hover .over_view{
+.hover_card:hover .over_view {
   display: block;
   position: absolute;
   top: 50%;
@@ -149,11 +238,16 @@ export default {
   transform: translate(-50%, -50%);
   color: white;
   max-height: 90%;
-  width: 70%;
+  width: 98.5%;
   padding: 10px;
 }
-.hover_card:hover img{
+.hover_card:hover img {
   opacity: 0.2;
 }
-
+.text_red {
+  color: #e10228;
+}
+.text_justify{
+  text-align: justify;
+}
 </style>
