@@ -56,17 +56,18 @@
           :key="movie.id"
         >
           <img
-            class="cover h-100"
+            class="cover h-100 img_film"
             v-if="!movie.poster_path"
             src="https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png"
             alt=""
           />
           <img
+          class="img_film"
             :src="'https://image.tmdb.org/t/p/w342' + movie.poster_path"
             alt=""
           />
           <div class="over_view text_justify p-4">
-            <div>{{ movie.title }}</div>
+            <h3 class="text_red">{{ movie.title }}</h3>
             <div>{{ movie.name }}</div>
             <div>{{ movie.original_name }}</div>
             <div>{{ movie.original_title }}</div>
@@ -91,7 +92,8 @@
               <div>
                 <div v-if="movie.actors.length > 0">
                   <div v-for="actor in movie.actors" :key="actor.id">
-                    {{ actor.name }}
+                    <div>{{ actor.name }}</div>
+                    <img class="w-50" :src=" 'https://image.tmdb.org/t/p/w342' + actor.profile_path" alt="" />
                   </div>
                 </div>
                 <div v-else>
@@ -241,13 +243,13 @@ export default {
   width: 98.5%;
   padding: 10px;
 }
-.hover_card:hover img {
+.hover_card:hover .img_film {
   opacity: 0.2;
 }
 .text_red {
   color: #e10228;
 }
-.text_justify{
+.text_justify {
   text-align: justify;
 }
 </style>
