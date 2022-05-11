@@ -31,10 +31,10 @@
     <div class="container-fluid">
         <div class="row row-cols-1 row-cols-lg-6 d-flex justify-content-center p-3">
           <!-- Film and series -->
-            <div class="col card d-flex text-center border_radius mx-3 p-3 gy-5 hover_card" v-for="(movie, index) in movies" :key="index">
+            <div class="col card d-flex text-center border_radius mx-3 p-3 gy-5 hover_card" v-for="movie in movies" :key="movie.id">
                 <img class="cover h-100" v-if="!movie.poster_path" src="https://www.salonlfc.com/wp-content/uploads/2018/01/image-not-found-scaled.png" alt="">
                 <img :src="'https://image.tmdb.org/t/p/w342' + movie.poster_path" alt="">
-                <div class="over_view">
+                <div class="over_view" v-on:mouseover="mouseover(movie.id)">
                   <div>{{movie.title}}</div>
                   <div>{{movie.name}}</div>
                   <div>{{movie.original_name}}</div>
@@ -42,6 +42,7 @@
                   <div>{{movie.original_language}}</div> <lang-flag :iso="movie.original_language"/>
                   <div>{{movie.vote_average}}</div>
                   <div>{{movie.overview}}</div>
+                  <div>{{movie.id}}</div>
                   <div class="star">
                     <font-awesome-icon :class="arrotondo(movie.vote_average) >= 2 ? 'color_star' : '' " icon="fa-solid fa-star" />
                     <font-awesome-icon :class="arrotondo(movie.vote_average) >= 4 ? 'color_star': '' " icon="fa-solid fa-star" />
@@ -49,6 +50,12 @@
                     <font-awesome-icon :class="arrotondo(movie.vote_average) >= 8 ? 'color_star' : '' " icon="fa-solid fa-star" />
                     <font-awesome-icon :class="arrotondo(movie.vote_average) >= 10 ? 'color_star' : '' " icon="fa-solid fa-star" />
                 </div>
+                <div v-for="(actor, index) in actors" :key="index"></div>
+                  <div>{{actors[0].name}}</div>
+                  <div>{{actors[1].name}}</div>
+                  <div>{{actors[2].name}}</div>
+                  <div>{{actors[3].name}}</div>
+                  <div>{{actors[4].name}}</div>
               </div> 
             </div>
         </div>
@@ -65,7 +72,10 @@ export default {
           movies: [],
           error: null,
           query: "",
-          inputSearch: ""
+          inputSearch: "",
+          actors:[],
+         
+          
       }
   },
    methods:{
@@ -80,7 +90,7 @@ export default {
       .then((results) =>{
         this.movies = [...this.movies, ...results.data.results];
       })
-
+     
       .catch((error) => {
           console.log(error);
           this.error = `Scusa c'è un errore ${this.error}`
@@ -89,6 +99,12 @@ export default {
     arrotondo(num){
       return Math.round(num)
     },
+    mouseover(id){
+        axios.get(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=6492e216147f755d586c53abf227d9a5&language=en-US`)
+        .then((results) =>{
+          this.actors = results.data.cast;
+      })
+    }    
   }
   
 };
@@ -133,6 +149,8 @@ export default {
   transform: translate(-50%, -50%);
   color: white;
   max-height: 90%;
+  width: 70%;
+  padding: 10px;
 }
 .hover_card:hover img{
   opacity: 0.2;
