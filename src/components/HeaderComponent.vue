@@ -5,6 +5,7 @@
         class="container-fluid d-flex justify-content-around align-items-center"
       >
         <img class="logo" src="@/assets/img/logoNetflix.png" alt="" />
+
         <button
           class="navbar-toggler color_red"
           type="button"
@@ -16,6 +17,7 @@
         >
           <span class="navbar-toggler-icon"></span>
         </button>
+
         <div
           class="collapse navbar-collapse justify-content-end mt-3"
           id="navbarSupportedContent"
@@ -62,7 +64,7 @@
             alt=""
           />
           <img
-          class="img_film"
+            class="img_film"
             :src="'https://image.tmdb.org/t/p/w342' + movie.poster_path"
             alt=""
           />
@@ -93,7 +95,13 @@
                 <div v-if="movie.actors.length > 0">
                   <div v-for="actor in movie.actors" :key="actor.id">
                     <div>{{ actor.name }}</div>
-                    <img class="w-50" :src=" 'https://image.tmdb.org/t/p/w342' + actor.profile_path" alt="" />
+                    <img
+                      class="w-50"
+                      :src="
+                        'https://image.tmdb.org/t/p/w342' + actor.profile_path
+                      "
+                      alt=""
+                    />
                   </div>
                 </div>
                 <div v-else>
